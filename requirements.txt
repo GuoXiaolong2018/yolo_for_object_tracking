@@ -1,0 +1,9 @@
+# YOLO 跟踪与 OpenCV 可视化（torch/torchvision 由 ultralytics 依赖拉取；GPU 环境建议先按 https://pytorch.org 安装对应 CUDA 版 torch 再装本文件）
+ultralytics>=8.3.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+PyYAML>=6.0
+
+# 奥比中光 USB 实时取流（tools/orbbec_tracking_live.py）需安装官方提供的 pyorbbecsdk，通常不在公共 PyPI；请参见奥比 SDK 文档或贵司制品库。
+# 检测权重请自备（如 Ultralytics 官方 yolo11n.pt），或从贵司模型仓库获取。
