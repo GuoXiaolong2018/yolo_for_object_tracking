@@ -2,7 +2,7 @@
 """
 奥比中光 USB 相机实时取流 + Ultralytics YOLO 多目标跟踪（persist=True 连续帧关联）。
 
-复用 orbbec_record_video 的 fiveages_cam 导入与 BGR 转换逻辑；跟踪 API 参考 demo_tracking.py
+复用常见 Orbbec 录制脚本中的相机导入与 BGR 转换思路；跟踪 API 参考 demo_tracking.py
 与 material.txt 中的「Streaming for-loop with tracking」示例。
 
 录制（与 orbbec_record_video 交互习惯一致，保存内容为当前窗口中的可视化画面，含检测/分割/轨迹/推理耗时条）：
@@ -26,10 +26,10 @@ import types
 from pathlib import Path
 
 
-def _setup_fiveages_cam_imports(project_root: Path) -> None:
-    cam_root = project_root / "fiveages_cameras"
+def _setup_vendor_camera_imports(project_root: Path) -> None:
+    cam_root = project_root / "vendor_cameras"
     if not cam_root.is_dir():
-        raise RuntimeError(f"未找到 fiveages_cameras 目录: {cam_root}")
+        raise RuntimeError(f"未找到 vendor_cameras 目录: {cam_root}")
 
     sys.path.insert(0, str(cam_root))
 
@@ -37,15 +37,15 @@ def _setup_fiveages_cam_imports(project_root: Path) -> None:
     if not logger_path.is_file():
         raise RuntimeError(f"未找到备用 logger: {logger_path}")
 
-    pkg = types.ModuleType("fiveages_utils")
+    pkg = types.ModuleType("vendor_cam_utils")
     pkg.__path__ = []
-    sys.modules["fiveages_utils"] = pkg
+    sys.modules["vendor_cam_utils"] = pkg
 
-    spec = importlib.util.spec_from_file_location("fiveages_utils.logger", logger_path)
+    spec = importlib.util.spec_from_file_location("vendor_cam_utils.logger", logger_path)
     if spec is None or spec.loader is None:
-        raise RuntimeError("无法加载 fiveages_utils.logger")
+        raise RuntimeError("无法加载 vendor_cam_utils.logger")
     mod = importlib.util.module_from_spec(spec)
-    sys.modules["fiveages_utils.logger"] = mod
+    sys.modules["vendor_cam_utils.logger"] = mod
     spec.loader.exec_module(mod)
 
 
@@ -280,7 +280,7 @@ def _draw_tracking_ui(
 
 def _parse_args() -> argparse.Namespace:
     project_root = Path(__file__).resolve().parent.parent
-    default_config = project_root / "fiveages_cameras" / "orbbec" / "orbbec_camera_usb_config.yaml"
+    default_config = project_root / "vendor_cameras" / "orbbec" / "orbbec_camera_usb_config.yaml"
 
     p = argparse.ArgumentParser(description="奥比中光相机 + YOLO 实时跟踪")
     p.add_argument(
@@ -346,7 +346,7 @@ def _parse_args() -> argparse.Namespace:
 def main() -> int:
     args = _parse_args()
     project_root = Path(__file__).resolve().parent.parent
-    _setup_fiveages_cam_imports(project_root)
+    _setup_vendor_camera_imports(project_root)
 
     import cv2
     import numpy as np

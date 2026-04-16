@@ -1,4 +1,4 @@
-# YOLO 多目标跟踪（FiveAges）
+# YOLO 多目标跟踪示例
 
 基于 [Ultralytics YOLO](https://github.com/ultralytics/ultralytics) 与 ByteTrack 的多目标跟踪示例，并提供奥比中光 USB 相机实时取流与 YOLO 跟踪、画面可视化的脚本。
 
@@ -9,7 +9,7 @@
 | `tools/demo_tracking.py` | 对本地视频文件做 `model.track(...)` 的极简示例 |
 | `tools/orbbec_tracking_live.py` | 奥比相机实时 RGB 流 + YOLO 跟踪与可视化 |
 | `tools/bytetrack.yaml` | ByteTrack 跟踪器参数（供 `track(..., tracker=...)` 使用） |
-| `fiveages_cameras/` | 相机抽象目录（Orbbec 等）；公开仓库不包含内网子模块，请自备相机相关代码 |
+| `vendor_cameras/` | 相机抽象目录（Orbbec 等）；公开仓库不包含厂商/内网代码，请自备相机相关实现 |
 
 ## 环境要求
 
@@ -24,7 +24,7 @@ git clone <本仓库 URL>
 cd <仓库根目录>
 ```
 
-将相机相关代码按 `fiveages_cameras/README.md` 说明放入 `fiveages_cameras/` 后再运行实时相机脚本。
+将相机相关代码按 `vendor_cameras/README.md` 说明放入 `vendor_cameras/` 后再运行实时相机脚本。
 
 ## 安装依赖（Conda）
 
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 ## 运行示例
 
-在**项目根目录**执行（保证 `fiveages_cameras` 存在且子模块已初始化）。
+在**项目根目录**执行（保证 `vendor_cameras` 目录已按说明补齐相机相关代码）。
 
 ### 1. 视频文件跟踪（`demo_tracking.py`）
 
@@ -69,7 +69,7 @@ python tools/orbbec_tracking_live.py \
 
 常用参数：
 
-- `--config`：奥比相机 YAML，默认指向 `fiveages_cameras/orbbec/orbbec_camera_usb_config.yaml`
+- `--config`：奥比相机 YAML，默认指向 `vendor_cameras/orbbec/orbbec_camera_usb_config.yaml`
 - `--serial`：覆盖配置中的设备序列号
 - `--device`：如 `cuda:0` 或 `cpu`
 
@@ -77,5 +77,5 @@ python tools/orbbec_tracking_live.py \
 
 ## 相机说明
 
-`fiveages_cameras` 的接口与配置需由你方提供的相机代码包补齐；占位说明见 `fiveages_cameras/README.md`。
+`vendor_cameras` 的接口与配置需由你方提供的相机代码包补齐；占位说明见 `vendor_cameras/README.md`。
 
